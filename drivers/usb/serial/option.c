@@ -608,7 +608,7 @@ static const struct usb_device_id option_ids[] = {
 	{ USB_DEVICE(AIRPLUS_VENDOR_ID, AIRPLUS_PRODUCT_MCD650) },
 	{ USB_DEVICE(TLAYTECH_VENDOR_ID, TLAYTECH_PRODUCT_TEU800) },
 	{ USB_DEVICE(FOUR_G_SYSTEMS_VENDOR_ID, FOUR_G_SYSTEMS_PRODUCT_W14) },
-	{ USB_DEVICE_AND_INTERFACE_INFO(SAMSUNG_VENDOR_ID, SAMSUNG_PRODUCT_GT_B3730, USB_CLASS_CDC_DATA, 0x00, 0x00) }, /* Samsung GT-B3730/GT-B3710 LTE USB modem.*/
+	{ USB_DEVICE_AND_INTERFACE_INFO(SAMSUNG_VENDOR_ID, SAMSUNG_PRODUCT_GT_B3730, USB_CLASS_CDC_DATA, 0x00, 0x00) }, /* Samsung GT-B3730 LTE USB modem */
 	{ } /* Terminating entry */
 };
 MODULE_DEVICE_TABLE(usb, option_ids);
@@ -737,7 +737,14 @@ static int option_probe(struct usb_serial *serial,
 		serial->interface->cur_altsetting->desc.bInterfaceClass == 0x8)
 		return -ENODEV;
 
+	/* Don't bind network interface on Samsung GT-B3730, it is handled by a separate module */
+	if (serial->dev->descriptor.idVendor == SAMSUNG_VENDOR_ID &&
+		serial->dev->descriptor.idProduct == SAMSUNG_PRODUCT_GT_B3730 &&
+		serial->interface->cur_altsetting->desc.bInterfaceClass != USB_CLASS_CDC_DATA)
+		return -ENODEV;
+
 	data = serial->private = kzalloc(sizeof(struct option_intf_private), GFP_KERNEL);
+
 	if (!data)
 		return -ENOMEM;
 	spin_lock_init(&data->susp_lock);
