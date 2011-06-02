@@ -350,6 +350,16 @@ config USB_NET_ZAURUS
 	  really need this non-conformant variant of CDC Ethernet (or in
 	  some cases CDC MDLM) protocol, not "g_ether".
 
+config CONFIG_USB_NET_KALMIA
+	tristate "Samsung Kalmia based LTE USB modem"
+	depends on USB_USBNET
+	help
+	  Choose this option if you have a Samsung Kalmia based USB modem
+	  as Samsung GT-B3730.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called kalmia.
+
 config USB_HSO
 	tristate "Option USB High Speed Mobile Devices"
 	depends on USB && RFKILL
@@ -376,15 +386,5 @@ config USB_CDC_PHONET
 	  Choose this option to support the Phonet interface to a Nokia
 	  cellular modem, as found on most Nokia handsets with the
 	  "PC suite" USB profile.
-
-config CONFIG_USB_NET_KALMIA
-	tristate "Samsung Kalmia based LTE USB modem"
-	depends on USB_USBNET
-	help
-	  Choose this option if you have a Samsung Kalmia based USB modem
-	  as Samsung GT-B3730.
-
-	  To compile this driver as a module, choose M here: the
-	  module will be called kalmia.
 
 endmenu
