@@ -4,6 +4,8 @@
  *
  * Copyright (C) 2011 Marius Bjoernstad Kotsbak
  *
+ * Sponsored by Quicklink Video Distribution Services Ltd.
+ *
  * Based on the cdc_eem module.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -36,6 +38,23 @@
 #include <linux/gfp.h>
 
 /*
+ * The Samsung Kalmia based LTE USB modems have a CDC ACM port for modem control
+ * handled by the "option" module and an ethernet data port handled by this
+ * module.
+ *
+ * The stick must first be switched into modem mode by usb_modeswitch
+ * or similar tool. Then the modem gets sent two initialization packets by
+ * this module, which gives the MAC address of the device. User space can then
+ * connect the modem using AT commands through the ACM port and then use
+ * DHCP on the network interface exposed by this module. Network packets are
+ * sent to and from the modem in a proprietary format discovered after watching
+ * the behavior of the windows driver for the modem.
+ *
+ * More information about the use of the modem is available in usb_modeswitch
+ * forum and the project page:
+ *
+ * http://www.draisberghof.de/usb_modeswitch/bb/viewtopic.php?t=465
+ * https://github.com/mkotsbak/Samsung-GT-B3730-linux-driver
  */
 
 /* #define	DEBUG */
