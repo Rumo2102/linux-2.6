@@ -284,12 +284,13 @@ kalmia_rx_fixup(struct usbnet *dev, struct sk_buff *skb)
 				return 0;
 			}
 		}
-		netdev_dbg(
-			dev->net,
-			"Received header: %02x:%02x:%02x:%02x:%02x:%02x. Package length: %i\n",
-			header_start[0], header_start[1], header_start[2],
-			header_start[3], header_start[4], header_start[5],
-			skb->len - KALMIA_HEADER_LENGTH);
+		else
+			netdev_dbg(
+				dev->net,
+				"Received header: %02x:%02x:%02x:%02x:%02x:%02x. Package length: %i\n",
+				header_start[0], header_start[1], header_start[2],
+				header_start[3], header_start[4], header_start[5],
+				skb->len - KALMIA_HEADER_LENGTH);
 
 		/* subtract start header and end header */
 		usb_packet_length = skb->len - (2 * KALMIA_HEADER_LENGTH);
