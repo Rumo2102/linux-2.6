@@ -378,6 +378,10 @@ static void option_instat_callback(struct urb *urb);
  * It seems to contain a Qualcomm QSC6240/6290 chipset            */
 #define FOUR_G_SYSTEMS_PRODUCT_W14		0x9603
 
+/* Samsung products */
+#define SAMSUNG_VENDOR_ID                       0x04e8
+#define SAMSUNG_PRODUCT_GT_B3730                0x6889
+
 /* Haier products */
 #define HAIER_VENDOR_ID				0x201e
 #define HAIER_PRODUCT_CE100			0x2009
@@ -932,6 +936,7 @@ static const struct usb_device_id option_ids[] = {
 	{ USB_DEVICE(ALCATEL_VENDOR_ID, ALCATEL_PRODUCT_X060S) },
 	{ USB_DEVICE(AIRPLUS_VENDOR_ID, AIRPLUS_PRODUCT_MCD650) },
 	{ USB_DEVICE(TLAYTECH_VENDOR_ID, TLAYTECH_PRODUCT_TEU800) },
+	{ USB_DEVICE_AND_INTERFACE_INFO(SAMSUNG_VENDOR_ID, SAMSUNG_PRODUCT_GT_B3730, USB_CLASS_CDC_DATA, 0x00, 0x00) }, /* Samsung GT-B3730 LTE USB modem */
 	{ USB_DEVICE(LONGCHEER_VENDOR_ID, FOUR_G_SYSTEMS_PRODUCT_W14),
   	  .driver_info = (kernel_ulong_t)&four_g_w14_blacklist
   	},
@@ -1101,6 +1106,12 @@ static int option_probe(struct usb_serial *serial,
 		(serial->dev->descriptor.idProduct == HUAWEI_PRODUCT_K3765 ||
 			serial->dev->descriptor.idProduct == HUAWEI_PRODUCT_K4505) &&
 		serial->interface->cur_altsetting->desc.bInterfaceNumber == 1)
+		return -ENODEV;
+
+	/* Don't bind network interface on Samsung GT-B3730, it is handled by a separate module */
+	if (serial->dev->descriptor.idVendor == SAMSUNG_VENDOR_ID &&
+		serial->dev->descriptor.idProduct == SAMSUNG_PRODUCT_GT_B3730 &&
+		serial->interface->cur_altsetting->desc.bInterfaceClass != USB_CLASS_CDC_DATA)
 		return -ENODEV;
 
 	data = serial->private = kzalloc(sizeof(struct usb_wwan_intf_private), GFP_KERNEL);
