@@ -2,7 +2,7 @@
  * USB network interface driver for Samsung Kalmia based LTE USB modem like the
  * Samsung GT-B3730 and GT-B3710.
  *
- * Copyright (C) 2011 Marius Bjoernstad Kotsbak
+ * Copyright (C) 2011 Marius Bjoernstad Kotsbak <marius@kotsbak.com>
  *
  * Sponsored by Quicklink Video Distribution Services Ltd.
  *
