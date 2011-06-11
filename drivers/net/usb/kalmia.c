@@ -66,6 +66,24 @@
 
 /*-------------------------------------------------------------------------*/
 
+/* Workarounds for older kernel versions */
+#if defined(DEBUG)
+	#define netdev_dbg(__dev, format, args...) \
+		printk(KERN_DEBUG format, ##args)
+	#define netdev_err(__dev, format, args...) \
+		printk(KERN_ERR format, ##args)
+#else
+	#define netdev_dbg(__dev, format, args...) ({	\
+		if (0) \
+			printk(KERN_DEBUG format, ##args); \
+	})
+	#define netdev_err(__dev, format, args...) ({	\
+		if (0) \
+			printk(KERN_ERR format, ##args); \
+	})
+#endif
+/* End workarounds */
+
 static int
 kalmia_send_init_packet(struct usbnet *dev, u8 *init_msg, u8 init_msg_len,
 	u8 *buffer, u8 expected_len)
