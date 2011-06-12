@@ -350,7 +350,7 @@ config USB_NET_ZAURUS
 	  really need this non-conformant variant of CDC Ethernet (or in
 	  some cases CDC MDLM) protocol, not "g_ether".
 
-config CONFIG_USB_NET_KALMIA
+config USB_NET_KALMIA
 	tristate "Samsung Kalmia based LTE USB modem"
 	depends on USB_USBNET
 	help
