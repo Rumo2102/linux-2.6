@@ -118,27 +118,35 @@ kalmia_send_init_packet(struct usbnet *dev, u8 *init_msg, u8 init_msg_len,
 static int
 kalmia_init_and_get_ethernet_addr(struct usbnet *dev, u8 *ethernet_addr)
 {
-	char init_msg_1[] =
+	const static char init_msg_1[] =
 		{ 0x57, 0x50, 0x04, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00,
 		0x00, 0x00 };
-	char init_msg_2[] =
+	const static char init_msg_2[] =
 		{ 0x57, 0x50, 0x04, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0xf4,
 		0x00, 0x00 };
-	char receive_buf[28];
+	const static int buflen = 28;
+	char *usb_buf;
 	int status;
 
-	status = kalmia_send_init_packet(dev, init_msg_1, sizeof(init_msg_1)
-		/ sizeof(init_msg_1[0]), receive_buf, 24);
+	usb_buf = kmalloc(buflen, GFP_DMA | GFP_KERNEL);
+	if (!usb_buf)
+		return -ENOMEM;
+
+	memcpy(usb_buf, init_msg_1, 12);
+	status = kalmia_send_init_packet(dev, usb_buf, sizeof(init_msg_1)
+		/ sizeof(init_msg_1[0]), usb_buf, 24);
 	if (status != 0)
 		return status;
 
-	status = kalmia_send_init_packet(dev, init_msg_2, sizeof(init_msg_2)
-		/ sizeof(init_msg_2[0]), receive_buf, 28);
+	memcpy(usb_buf, init_msg_2, 12);
+	status = kalmia_send_init_packet(dev, usb_buf, sizeof(init_msg_2)
+		/ sizeof(init_msg_2[0]), usb_buf, 28);
 	if (status != 0)
 		return status;
 
-	memcpy(ethernet_addr, receive_buf + 10, ETH_ALEN);
+	memcpy(ethernet_addr, usb_buf + 10, ETH_ALEN);
 
+	kfree(usb_buf);
 	return status;
 }
 
