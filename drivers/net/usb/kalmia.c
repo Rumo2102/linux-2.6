@@ -228,9 +228,8 @@ done:
 	header_start[0] = 0x57;
 	header_start[1] = 0x44;
 	content_len = skb->len - KALMIA_HEADER_LENGTH;
-	header_start[2] = (content_len & 0xff); /* low byte */
-	header_start[3] = (content_len >> 8); /* high byte */
 
+	put_unaligned_le16(content_len, &header_start[2]);
 	header_start[4] = ether_type_1;
 	header_start[5] = ether_type_2;
 
@@ -312,7 +311,7 @@ kalmia_rx_fixup(struct usbnet *dev, struct sk_buff *skb)
 
 		/* subtract start header and end header */
 		usb_packet_length = skb->len - (2 * KALMIA_HEADER_LENGTH);
-		ether_packet_length = header_start[2] + (header_start[3] << 8);
+		ether_packet_length = get_unaligned_le16(&header_start[2]);
 		skb_pull(skb, KALMIA_HEADER_LENGTH);
 
 		/* Some small packets misses end marker */
