@@ -257,13 +257,13 @@ kalmia_rx_fixup(struct usbnet *dev, struct sk_buff *skb)
 	 * Our task here is to strip off framing, leaving skb with one
 	 * data frame for the usbnet framework code to process.
 	 */
-	const u8 HEADER_END_OF_USB_PACKET[] =
+	const static u8 HEADER_END_OF_USB_PACKET[] =
 		{ 0x57, 0x5a, 0x00, 0x00, 0x08, 0x00 };
-	const u8 EXPECTED_UNKNOWN_HEADER_1[] =
+	const static u8 EXPECTED_UNKNOWN_HEADER_1[] =
 		{ 0x57, 0x43, 0x1e, 0x00, 0x15, 0x02 };
-	const u8 EXPECTED_UNKNOWN_HEADER_2[] =
+	const static u8 EXPECTED_UNKNOWN_HEADER_2[] =
 		{ 0x57, 0x50, 0x0e, 0x00, 0x00, 0x00 };
-	u8 i = 0;
+	int i = 0;
 
 	/* incomplete header? */
 	if (skb->len < KALMIA_HEADER_LENGTH)
