@@ -216,7 +216,8 @@ kalmia_tx_fixup(struct usbnet *dev, struct sk_buff *skb, gfp_t flags)
 	dev_kfree_skb_any(skb);
 	skb = skb2;
 
-	done: header_start = skb_push(skb, KALMIA_HEADER_LENGTH);
+done:
+	header_start = skb_push(skb, KALMIA_HEADER_LENGTH);
 	ether_type_1 = header_start[KALMIA_HEADER_LENGTH + 12];
 	ether_type_2 = header_start[KALMIA_HEADER_LENGTH + 13];
 
